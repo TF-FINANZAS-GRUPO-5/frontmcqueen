@@ -99,17 +99,25 @@ export default function Catalog() {
             <div style={{ position: 'relative', height: '400px', background: '#000' }}>
               {selectedVehicle.images ? (
                 <>
-                  <img 
-                    src={JSON.parse(selectedVehicle.images)[currentImageIndex]} 
-                    alt="Vehicle" 
-                    style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
-                  />
+                  {JSON.parse(selectedVehicle.images).map((img, idx) => (
+                    <img 
+                      key={idx}
+                      src={img} 
+                      alt="Vehicle" 
+                      style={{ 
+                        width: '100%', height: '100%', objectFit: 'contain',
+                        position: 'absolute', top: 0, left: 0,
+                        opacity: currentImageIndex === idx ? 1 : 0,
+                        transition: 'opacity 0.4s ease-in-out'
+                      }} 
+                    />
+                  ))}
                   {JSON.parse(selectedVehicle.images).length > 1 && (
                     <>
-                      <button onClick={prevImage} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', padding: '0.5rem', cursor: 'pointer' }}>
+                      <button onClick={prevImage} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', padding: '0.5rem', cursor: 'pointer', zIndex: 10, transition: 'background 0.3s' }} onMouseEnter={e => e.currentTarget.style.background = 'var(--accent)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.5)'}>
                         <ChevronLeft size={32} />
                       </button>
-                      <button onClick={nextImage} style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', padding: '0.5rem', cursor: 'pointer' }}>
+                      <button onClick={nextImage} style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', padding: '0.5rem', cursor: 'pointer', zIndex: 10, transition: 'background 0.3s' }} onMouseEnter={e => e.currentTarget.style.background = 'var(--accent)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.5)'}>
                         <ChevronRight size={32} />
                       </button>
                     </>

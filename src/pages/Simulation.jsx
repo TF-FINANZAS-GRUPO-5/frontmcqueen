@@ -1,6 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, Calculator } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Calculator, ChevronDown, ChevronUp } from 'lucide-react';
+
+const CustomSelect = ({ value, options, onChange }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ position: 'relative' }}>
+      <div className="input-field" style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} onClick={() => setOpen(!open)}>
+        {options.find(o => String(o.value) === String(value))?.label || 'Seleccionar'}
+        <ChevronDown size={18} style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }} />
+      </div>
+      {open && (
+        <>
+          <div style={{ position: 'fixed', inset: 0, zIndex: 40 }} onClick={() => setOpen(false)} />
+          <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'var(--bg-dark)', border: '1px solid var(--accent)', borderRadius: '8px', marginTop: '0.5rem', zIndex: 50, boxShadow: '0 10px 25px rgba(0,0,0,0.5)', overflow: 'hidden', animation: 'fadeIn 0.2s ease-out' }}>
+            {options.map(opt => (
+              <div key={opt.value} onClick={() => { onChange(opt.value); setOpen(false); }} style={{ padding: '0.75rem 1rem', cursor: 'pointer', background: String(value) === String(opt.value) ? 'var(--accent)' : 'transparent', transition: 'background 0.2s' }} onMouseEnter={(e) => { if(String(value) !== String(opt.value)) e.target.style.background = 'rgba(59, 130, 246, 0.2)' }} onMouseLeave={(e) => { if(String(value) !== String(opt.value)) e.target.style.background = 'transparent' }}>
+                {opt.label}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+const NumberInput = ({ value, onChange, min, max, step = 1, float = false }) => {
+  return (
+    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+      <input type="number" className="input-field" value={value} onChange={e => onChange(e.target.value)} min={min} max={max} step={float ? '0.01' : '1'} required style={{ paddingRight: '2.5rem' }} />
+      <div style={{ position: 'absolute', right: '0.5rem', display: 'flex', flexDirection: 'column', gap: '2px', top: '50%', transform: 'translateY(-50%)', marginTop: '0.25rem', zIndex: 10 }}>
+        <button type="button" onClick={() => onChange(String(Math.min(max, Number(value || 0) + step)))} style={{ background: 'transparent', border: 'none', color: 'var(--accent)', cursor: 'pointer', display: 'flex', padding: 0 }}><ChevronUp size={16} /></button>
+        <button type="button" onClick={() => onChange(String(Math.max(min, Number(value || 0) - step)))} style={{ background: 'transparent', border: 'none', color: 'var(--accent)', cursor: 'pointer', display: 'flex', padding: 0 }}><ChevronDown size={16} /></button>
+      </div>
+    </div>
+  )
+}
 
 export default function Simulation() {
   const { vehicleId } = useParams();
@@ -98,44 +134,52 @@ export default function Simulation() {
             <div className="grid grid-cols-2" style={{ gap: '1rem', marginBottom: '1rem' }}>
               <div className="input-group" style={{ margin: 0 }}>
                 <label className="input-label">Cuota Inicial (USD) - Máx 50%</label>
-                <input type="number" className="input-field" value={initialPayment} onChange={e => setInitialPayment(e.target.value)} required min="0" max={vehicle.price * 0.5} />
+                <NumberInput value={initialPayment} onChange={setInitialPayment} min={0} max={vehicle.price * 0.5} step={500} />
               </div>
               <div className="input-group" style={{ margin: 0 }}>
                 <label className="input-label">TEA (%)</label>
-                <input type="number" step="0.01" className="input-field" value={tea} onChange={e => setTea(e.target.value)} required min="1" max="100" />
+                <NumberInput value={tea} onChange={setTea} min={1} max={100} step={1} float={true} />
               </div>
             </div>
 
             <div className="grid grid-cols-2" style={{ gap: '1rem', marginBottom: '1rem' }}>
               <div className="input-group" style={{ margin: 0 }}>
                 <label className="input-label">Plazo (Meses)</label>
-                <select className="input-field" value={months} onChange={e => setMonths(e.target.value)}>
-                  <option value="12">12 meses</option>
-                  <option value="24">24 meses</option>
-                  <option value="36">36 meses</option>
-                  <option value="48">48 meses</option>
-                  <option value="60">60 meses</option>
-                  <option value="72">72 meses</option>
-                </select>
+                <CustomSelect 
+                  value={months} 
+                  onChange={setMonths} 
+                  options={[
+                    {value: '12', label: '12 meses'},
+                    {value: '24', label: '24 meses'},
+                    {value: '36', label: '36 meses'},
+                    {value: '48', label: '48 meses'},
+                    {value: '60', label: '60 meses'},
+                    {value: '72', label: '72 meses'},
+                  ]} 
+                />
               </div>
               <div className="input-group" style={{ margin: 0 }}>
                 <label className="input-label">Compra Inteligente (Valor Residual %)</label>
-                <input type="number" className="input-field" value={vrRatio} onChange={e => setVrRatio(e.target.value)} required min="0" max="50" />
+                <NumberInput value={vrRatio} onChange={setVrRatio} min={0} max={50} step={5} />
               </div>
             </div>
 
             <div className="grid grid-cols-2" style={{ gap: '1rem', marginBottom: '1rem' }}>
               <div className="input-group" style={{ margin: 0 }}>
                 <label className="input-label">Periodos de Gracia (Meses)</label>
-                <input type="number" className="input-field" value={gracePeriod} onChange={e => setGracePeriod(e.target.value)} required min="0" max="12" />
+                <NumberInput value={gracePeriod} onChange={setGracePeriod} min={0} max={12} step={1} />
               </div>
               {Number(gracePeriod) > 0 && (
                 <div className="input-group" style={{ margin: 0 }}>
                   <label className="input-label">Tipo de Gracia</label>
-                  <select className="input-field" value={graceType} onChange={e => setGraceType(e.target.value)}>
-                    <option value="parcial">Parcial (Paga intereses)</option>
-                    <option value="total">Total (No paga, capitaliza)</option>
-                  </select>
+                  <CustomSelect 
+                    value={graceType} 
+                    onChange={setGraceType} 
+                    options={[
+                      {value: 'parcial', label: 'Parcial (Paga intereses)'},
+                      {value: 'total', label: 'Total (No paga, capitaliza)'},
+                    ]} 
+                  />
                 </div>
               )}
             </div>
