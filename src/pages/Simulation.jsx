@@ -244,6 +244,9 @@ export default function Simulation() {
             <thead>
               <tr>
                 <th>Mes</th>
+                <th>TEA</th>
+                <th>TEM</th>
+                <th>Gracia</th>
                 <th>Saldo Inicial</th>
                 <th>Amortización</th>
                 <th>Interés</th>
@@ -257,6 +260,9 @@ export default function Simulation() {
               {result.paymentPlan.map((row) => (
                 <tr key={row.period}>
                   <td>{row.period}</td>
+                  <td>{(row.tea * 100).toFixed(2)}%</td>
+                  <td>{(row.tem * 100).toFixed(6)}%</td>
+                  <td>{row.grace}</td>
                   <td>${(row.balance + row.amortization).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                   <td>${row.amortization.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                   <td>${row.interest.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
