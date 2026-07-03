@@ -97,6 +97,8 @@ export default function Simulation() {
       gracePeriod: Number(gracePeriod),
       graceType: gracePeriod > 0 ? graceType : 'ninguno',
       hasDesgravamen,
+      bank: bank,
+      smartPercentage: bankVrRatios[bank] / 100,
       vrRatio: bankVrRatios[bank] / 100
     };
 
