@@ -52,7 +52,15 @@ export default function Simulation() {
   const [gracePeriod, setGracePeriod] = useState('0');
   const [graceType, setGraceType] = useState('ninguno');
   const [hasDesgravamen, setHasDesgravamen] = useState(true);
-  const [vrRatio, setVrRatio] = useState('0'); // % of Smart Buy
+  const [bank, setBank] = useState('bcp'); // Default bank
+
+  const bankVrRatios = {
+    'bcp': 40,
+    'bbva': 30,
+    'interbank': 35,
+    'scotiabank': 45,
+    'pichincha': 50
+  };
 
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
@@ -89,7 +97,7 @@ export default function Simulation() {
       gracePeriod: Number(gracePeriod),
       graceType: gracePeriod > 0 ? graceType : 'ninguno',
       hasDesgravamen,
-      vrRatio: Number(vrRatio) / 100
+      vrRatio: bankVrRatios[bank] / 100
     };
 
     if (data.initialPayment > vehicle.price * 0.5) {
@@ -159,8 +167,18 @@ export default function Simulation() {
                 />
               </div>
               <div className="input-group" style={{ margin: 0 }}>
-                <label className="input-label">Compra Inteligente (Valor Residual %)</label>
-                <NumberInput value={vrRatio} onChange={setVrRatio} min={0} max={50} step={5} />
+                <label className="input-label">Banco (Compra Inteligente - % Residual)</label>
+                <CustomSelect 
+                  value={bank} 
+                  onChange={setBank} 
+                  options={[
+                    {value: 'bcp', label: 'BCP (40%)'},
+                    {value: 'interbank', label: 'Interbank (35%)'},
+                    {value: 'bbva', label: 'BBVA (30%)'},
+                    {value: 'scotiabank', label: 'Scotiabank (45%)'},
+                    {value: 'pichincha', label: 'Pichincha (50%)'},
+                  ]} 
+                />
               </div>
             </div>
 
@@ -206,10 +224,14 @@ export default function Simulation() {
             <h2 style={{ marginBottom: '1.5rem', color: 'var(--success)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <CheckCircle /> Resultados de Simulación
             </h2>
-            <div className="grid grid-cols-2" style={{ gap: '1rem' }}>
+            <div className="grid grid-cols-3" style={{ gap: '1rem' }}>
               <div style={{ padding: '1rem', background: 'var(--bg-dark)', borderRadius: '8px' }}>
                 <p className="input-label">VAN</p>
                 <p style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>${result.financials.van.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+              </div>
+              <div style={{ padding: '1rem', background: 'var(--bg-dark)', borderRadius: '8px' }}>
+                <p className="input-label">TIR (Mensual)</p>
+                <p style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--accent)' }}>{(result.financials.tir * 100).toFixed(2)}%</p>
               </div>
               <div style={{ padding: '1rem', background: 'var(--bg-dark)', borderRadius: '8px' }}>
                 <p className="input-label">TCEA (Anual)</p>
