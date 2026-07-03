@@ -263,7 +263,7 @@ export default function Simulation() {
                   <td>{(row.tea * 100).toFixed(2)}%</td>
                   <td>{(row.tem * 100).toFixed(6)}%</td>
                   <td>{row.grace}</td>
-                  <td>${(row.balance + row.amortization).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                  <td>${row.initialBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                   <td>${row.amortization.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                   <td>${row.interest.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                   <td>${row.desgravamen.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
