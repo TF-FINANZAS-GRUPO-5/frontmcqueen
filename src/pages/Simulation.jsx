@@ -155,18 +155,9 @@ export default function Simulation() {
             <div className="grid grid-cols-2" style={{ gap: '1rem', marginBottom: '1rem' }}>
               <div className="input-group" style={{ margin: 0 }}>
                 <label className="input-label">Plazo (Meses)</label>
-                <CustomSelect 
-                  value={months} 
-                  onChange={setMonths} 
-                  options={[
-                    {value: '12', label: '12 meses'},
-                    {value: '24', label: '24 meses'},
-                    {value: '36', label: '36 meses'},
-                    {value: '48', label: '48 meses'},
-                    {value: '60', label: '60 meses'},
-                    {value: '72', label: '72 meses'},
-                  ]} 
-                />
+                <div className="input-field" style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text-secondary)', cursor: 'not-allowed' }}>
+                  36 meses (Fijo)
+                </div>
               </div>
               <div className="input-group" style={{ margin: 0 }}>
                 <label className="input-label">Banco (Compra Inteligente - % Residual)</label>
